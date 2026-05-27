@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,sans-serif);background:#f0f2f7;color:#1a2d6b}
+.topbar{background:#1a2d6b;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.logo-area{display:flex;align-items:center;gap:10px}
+.logo-text{display:flex;flex-direction:column}
+.logo-name{font-size:18px;font-weight:700;color:#fff;letter-spacing:1px;line-height:1}
+.logo-name span{color:#C9A84C}
+.logo-sub{font-size:10px;color:#C9A84C;letter-spacing:1.5px;text-transform:uppercase}
+.topbar-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{font-size:12px;padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:#fff;cursor:pointer;transition:background 0.2s}
+.btn:hover{background:rgba(255,255,255,0.2)}
+.btn-gold{background:#C9A84C;border-color:#C9A84C;color:#1a2d6b;font-weight:600}
+.btn-gold:hover{background:#b8923e}
+#main-view{padding:16px 20px}
+.info-box{background:#fff;border-left:3px solid #C9A84C;border-radius:6px;padding:10px 14px;font-size:12px;color:#555;margin-bottom:14px}
+.filters{background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;box-shadow:0 1px 4px rgba(26,45,107,0.07)}
+.filters select,.filters input[type=text]{width:100%;padding:7px 10px;font-size:13px;border:1px solid #dde2f0;border-radius:6px;background:#f7f8fc;color:#1a2d6b}
+.filters select:focus,.filters input:focus{outline:none;border-color:#1a2d6b}
+.count{font-size:13px;color:#666;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{background:#fff;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 4px rgba(26,45,107,0.08);border-top:3px solid #1a2d6b;transition:box-shadow 0.2s}
+.card:hover{box-shadow:0 4px 12px rgba(26,45,107,0.15)}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.card-title{font-size:15px;font-weight:600;line-height:1.3;color:#1a2d6b}
+.status-badge{font-size:10px;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;font-weight:600}
+.s-lancamento{background:#EEEDFE;color:#3C3489}
+.s-obras{background:#FFF3CD;color:#856404}
+.s-pronto{background:#d4edda;color:#155724}
+.card-const{font-size:12px;color:#888}
+.card-loc{font-size:13px;color:#444}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;background:#f0f2f7;color:#1a2d6b;border:1px solid #dde2f0;font-weight:500}
+.card-price{font-size:14px;font-weight:700;color:#C9A84C}
+.card-obs{font-size:12px;color:#888}
+.empty{text-align:center;padding:40px;color:#888;font-size:14px}
+.loading{text-align:center;padding:40px;color:#888;font-size:14px}
+.error-box{background:#fff0f0;border-left:3px solid #dc3545;border-radius:6px;padding:12px 16px;font-size:13px;color:#721c24;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo-area">
+    <!-- Logo SVG -->
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- F azul -->
+      <rect x="4" y="4" width="20" height="36" rx="2" fill="#1a2d6b" stroke="#2a4db0" stroke-width="0.5"/>
+      <rect x="4" y="4" width="26" height="8" rx="2" fill="#2a4db0"/>
+      <rect x="4" y="18" width="20" height="7" rx="2" fill="#2a4db0"/>
+      <!-- Chave dourada -->
+      <circle cx="32" cy="16" r="7" fill="#C9A84C"/>
+      <circle cx="32" cy="16" r="4" fill="#1a2d6b"/>
+      <rect x="30" y="22" width="4" height="14" rx="1.5" fill="#C9A84C"/>
+      <rect x="34" y="28" width="4" height="3" rx="1" fill="#C9A84C"/>
+      <rect x="34" y="33" width="4" height="3" rx="1" fill="#C9A84C"/>
+    </svg>
+    <div class="logo-text">
+      <div class="logo-name">FINCASA <span>IMOB</span></div>
+      <div class="logo-sub">Seu apê é possível</div>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn" onclick="loadData()" id="refresh-btn">↻ Atualizar</button>
+    <button class="btn btn-gold" onclick="openSheets()">✏️ Editar no Sheets</button>
+  </div>
+</div>
+
+<div id="main-view">
+  <div id="error-area"></div>
+
+  <div class="info-box">
+    📋 Dados carregados direto do Google Sheets. Para adicionar empreendimentos, clique em <strong>✏️ Editar no Sheets</strong> e depois em <strong>↻ Atualizar</strong>.
+  </div>
+
+  <div class="filters">
+    <input type="text" id="f-busca" placeholder="🔍 Buscar por nome..." oninput="render()">
+    <select id="f-zona" onchange="render()">
+      <option value="">Todas as zonas</option>
+      <option>Zona Leste</option><option>Zona Sul</option><option>Zona Norte</option>
+      <option>Zona Oeste</option><option>Centro</option><option>Região Metropolitana</option>
+    </select>
+    <select id="f-bairro" onchange="render()"><option value="">Todos os bairros</option></select>
+    <select id="f-const" onchange="render()"><option value="">Todas as construtoras</option></select>
+    <select id="f-dorm" onchange="render()">
+      <option value="">Dormitórios</option>
+      <option value="1">1 dorm</option><option value="2">2 dorm</option>
+      <option value="3">3 dorm</option><option value="4">4+ dorm</option>
+    </select>
+    <select id="f-status" onchange="render()">
+      <option value="">Todos os status</option>
+      <option>Lançamento</option><option>Em obras</option><option>Pronto</option>
+    </select>
+    <select id="f-vaga" onchange="render()">
+      <option value="">Vaga?</option><option value="sim">Com vaga</option><option value="nao">Sem vaga</option>
+    </select>
+    <select id="f-varanda" onchange="render()">
+      <option value="">Varanda?</option><option value="sim">Com varanda</option><option value="nao">Sem varanda</option>
+    </select>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div id="grid-area"><div class="loading">⏳ Carregando empreendimentos...</div></div>
+</div>
+
+<script>
+const SHEETS_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vTuvCpxiE-RA2lXr749yaz_dZS6izTe3YUsa8wPru4a6uQBF3ZPRps8RWBQvad_7gpjK-GG6T29oQWQ/pub?output=csv";
+const SHEETS_EDIT="https://docs.google.com/spreadsheets/d/e/2PACX-1vTuvCpxiE-RA2lXr749yaz_dZS6izTe3YUsa8wPru4a6uQBF3ZPRps8RWBQvad_7gpjK-GG6T29oQWQ/pub";
+let emps=[];
+
+function openSheets(){window.open(SHEETS_EDIT,'_blank')}
+
+function parseCSV(text){
+  const lines=text.trim().split("\n");
+  if(lines.length<2)return[];
+  const headers=lines[0].split(",").map(h=>h.trim().toLowerCase().replace(/"/g,""));
+  return lines.slice(1).map(line=>{
+    const cols=[];let cur="",inQ=false;
+    for(let c of line){
+      if(c==='"'){inQ=!inQ}
+      else if(c===','&&!inQ){cols.push(cur.trim());cur=""}
+      else cur+=c;
+    }
+    cols.push(cur.trim());
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=(cols[i]||"").replace(/^"|"$/g,"").trim());
+    return{id:Math.random(),nome:obj.nome||"",construtora:obj.construtora||"",status:obj.status||"",zona:obj.zona||"",bairro:obj.bairro||"",dorm:parseInt(obj.dorm)||0,preco:obj.preco||"",vaga:obj.vaga?.toLowerCase()==="sim",varanda:obj.varanda?.toLowerCase()==="sim",obs:obj.obs||""};
+  }).filter(e=>e.nome);
+}
+
+async function loadData(){
+  const btn=document.getElementById("refresh-btn");
+  btn.textContent="⏳ Atualizando...";btn.disabled=true;
+  document.getElementById("error-area").innerHTML="";
+  document.getElementById("grid-area").innerHTML='<div class="loading">⏳ Carregando empreendimentos...</div>';
+  try{
+    const r=await fetch(SHEETS_URL+"&t="+Date.now());
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const text=await r.text();
+    emps=parseCSV(text);
+    if(!emps.length){
+      document.getElementById("grid-area").innerHTML='<div class="empty">Nenhum empreendimento encontrado na planilha.<br><small>Verifique os cabeçalhos: nome, construtora, status, zona, bairro, dorm, preco, vaga, varanda, obs</small></div>';
+    }else{render()}
+  }catch(e){
+    document.getElementById("error-area").innerHTML=`<div class="error-box">⚠️ Não foi possível carregar os dados: ${e.message}. Verifique se a planilha está publicada como CSV.</div>`;
+    document.getElementById("grid-area").innerHTML="";
+  }finally{btn.textContent="↻ Atualizar";btn.disabled=false}
+}
+
+function statusClass(s){
+  const sl=(s||"").toLowerCase();
+  if(sl.includes("lan"))return"s-lancamento";
+  if(sl.includes("obra"))return"s-obras";
+  return"s-pronto";
+}
+
+function render(){
+  const busca=document.getElementById("f-busca").value.toLowerCase();
+  const zona=document.getElementById("f-zona").value;
+  const bairro=document.getElementById("f-bairro").value;
+  const cons=document.getElementById("f-const").value;
+  const dorm=document.getElementById("f-dorm").value;
+  const status=document.getElementById("f-status").value;
+  const vaga=document.getElementById("f-vaga").value;
+  const varanda=document.getElementById("f-varanda").value;
+
+  let list=emps.filter(e=>{
+    if(busca&&!e.nome.toLowerCase().includes(busca)&&!e.construtora.toLowerCase().includes(busca))return false;
+    if(zona&&e.zona!==zona)return false;
+    if(bairro&&e.bairro!==bairro)return false;
+    if(cons&&e.construtora!==cons)return false;
+    if(dorm){if(dorm==="4"&&e.dorm<4)return false;else if(dorm!=="4"&&e.dorm!==parseInt(dorm))return false}
+    if(status&&e.status!==status)return false;
+    if(vaga==="sim"&&!e.vaga)return false;
+    if(vaga==="nao"&&e.vaga)return false;
+    if(varanda==="sim"&&!e.varanda)return false;
+    if(varanda==="nao"&&e.varanda)return false;
+    return true;
+  });
+
+  const allConst=[...new Set(emps.map(e=>e.construtora).filter(Boolean))].sort();
+  const fConst=document.getElementById("f-const");
+  const curConst=fConst.value;
+  fConst.innerHTML='<option value="">Todas as construtoras</option>'+allConst.map(c=>`<option${c===curConst?" selected":""}>${c}</option>`).join("");
+
+  const filteredBairros=[...new Set(emps.filter(e=>!zona||e.zona===zona).map(e=>e.bairro).filter(Boolean))].sort();
+  const fB=document.getElementById("f-bairro");
+  const curB=fB.value;
+  fB.innerHTML='<option value="">Todos os bairros</option>'+filteredBairros.map(b=>`<option${b===curB?" selected":""}>${b}</option>`).join("");
+
+  document.getElementById("count").textContent=`${list.length} empreendimento${list.length!==1?"s":""} encontrado${list.length!==1?"s":""}`;
+
+  if(!list.length){document.getElementById("grid-area").innerHTML='<div class="empty">Nenhum empreendimento encontrado com os filtros selecionados.</div>';return}
+
+  document.getElementById("grid-area").innerHTML=`<div class="grid">${list.map(e=>`
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">${e.nome}</div>
+        <span class="status-badge ${statusClass(e.status)}">${e.status}</span>
+      </div>
+      <div class="card-const">${e.construtora}</div>
+      <div class="card-loc">📍 ${e.zona}${e.bairro?" · "+e.bairro:""}</div>
+      <div class="card-tags">
+        ${e.dorm?`<span class="tag">🛏 ${e.dorm} dorm${e.dorm>1?"s":""}</span>`:""}
+        ${e.vaga?'<span class="tag">🚗 Vaga</span>':''}
+        ${e.varanda?'<span class="tag">🌿 Varanda</span>':''}
+      </div>
+      ${e.preco?`<div class="card-price">${e.preco}</div>`:""}
+      ${e.obs?`<div class="card-obs">${e.obs}</div>`:""}
+    </div>`).join("")}
+  </div>`;
+}
+
+loadData();
+</script>
+</body>
+</html>
