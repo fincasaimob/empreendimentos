@@ -3,28 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fincasa Imob — Empreendimentos</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans,sans-serif);background:#f0f2f7;color:#1a2d6b}
+body{font-family:sans-serif;background:#f0f2f7;color:#1a2d6b}
 .topbar{background:#1a2d6b;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .logo-area{display:flex;align-items:center;gap:10px}
 .logo-text{display:flex;flex-direction:column}
 .logo-name{font-size:18px;font-weight:700;color:#fff;letter-spacing:1px;line-height:1}
 .logo-name span{color:#C9A84C}
 .logo-sub{font-size:10px;color:#C9A84C;letter-spacing:1.5px;text-transform:uppercase}
-.topbar-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.btn{font-size:12px;padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:#fff;cursor:pointer;transition:background 0.2s}
+.btn{font-size:12px;padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:#fff;cursor:pointer}
 .btn:hover{background:rgba(255,255,255,0.2)}
-.btn-gold{background:#C9A84C;border-color:#C9A84C;color:#1a2d6b;font-weight:600}
-.btn-gold:hover{background:#b8923e}
 #main-view{padding:16px 20px}
 .info-box{background:#fff;border-left:3px solid #C9A84C;border-radius:6px;padding:10px 14px;font-size:12px;color:#555;margin-bottom:14px}
 .filters{background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;box-shadow:0 1px 4px rgba(26,45,107,0.07)}
 .filters select,.filters input[type=text]{width:100%;padding:7px 10px;font-size:13px;border:1px solid #dde2f0;border-radius:6px;background:#f7f8fc;color:#1a2d6b}
-.filters select:focus,.filters input:focus{outline:none;border-color:#1a2d6b}
 .count{font-size:13px;color:#666;margin-bottom:10px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.card{background:#fff;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 4px rgba(26,45,107,0.08);border-top:3px solid #1a2d6b;transition:box-shadow 0.2s}
+.card{background:#fff;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 4px rgba(26,45,107,0.08);border-top:3px solid #1a2d6b}
 .card:hover{box-shadow:0 4px 12px rgba(26,45,107,0.15)}
 .card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .card-title{font-size:15px;font-weight:600;line-height:1.3;color:#1a2d6b}
@@ -37,7 +34,7 @@ body{font-family:var(--font-sans,sans-serif);background:#f0f2f7;color:#1a2d6b}
 .card-tags{display:flex;flex-wrap:wrap;gap:5px}
 .tag{font-size:11px;padding:3px 9px;border-radius:20px;background:#f0f2f7;color:#1a2d6b;border:1px solid #dde2f0;font-weight:500}
 .card-price{font-size:14px;font-weight:700;color:#C9A84C}
-.card-obs{font-size:12px;color:#888}
+.card-obs{font-size:12px;color:#888;font-style:italic}
 .empty{text-align:center;padding:40px;color:#888;font-size:14px}
 .loading{text-align:center;padding:40px;color:#888;font-size:14px}
 .error-box{background:#fff0f0;border-left:3px solid #dc3545;border-radius:6px;padding:12px 16px;font-size:13px;color:#721c24;margin-bottom:12px}
@@ -47,13 +44,10 @@ body{font-family:var(--font-sans,sans-serif);background:#f0f2f7;color:#1a2d6b}
 
 <div class="topbar">
   <div class="logo-area">
-    <!-- Logo SVG -->
     <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- F azul -->
       <rect x="4" y="4" width="20" height="36" rx="2" fill="#1a2d6b" stroke="#2a4db0" stroke-width="0.5"/>
       <rect x="4" y="4" width="26" height="8" rx="2" fill="#2a4db0"/>
       <rect x="4" y="18" width="20" height="7" rx="2" fill="#2a4db0"/>
-      <!-- Chave dourada -->
       <circle cx="32" cy="16" r="7" fill="#C9A84C"/>
       <circle cx="32" cy="16" r="4" fill="#1a2d6b"/>
       <rect x="30" y="22" width="4" height="14" rx="1.5" fill="#C9A84C"/>
@@ -65,19 +59,16 @@ body{font-family:var(--font-sans,sans-serif);background:#f0f2f7;color:#1a2d6b}
       <div class="logo-sub">Seu apê é possível</div>
     </div>
   </div>
-  <div class="topbar-actions">
+  <div>
     <button class="btn" onclick="loadData()" id="refresh-btn">↻ Atualizar</button>
-    <button class="btn btn-gold" onclick="openSheets()">✏️ Editar no Sheets</button>
   </div>
 </div>
 
 <div id="main-view">
   <div id="error-area"></div>
-
   <div class="info-box">
     📋 Dados carregados direto do Google Sheets. Clique em <strong>↻ Atualizar</strong> para ver as últimas novidades.
   </div>
-
   <div class="filters">
     <input type="text" id="f-busca" placeholder="🔍 Buscar por nome..." oninput="render()">
     <select id="f-zona" onchange="render()">
@@ -103,40 +94,49 @@ body{font-family:var(--font-sans,sans-serif);background:#f0f2f7;color:#1a2d6b}
       <option value="">Varanda?</option><option value="sim">Com varanda</option><option value="nao">Sem varanda</option>
     </select>
   </div>
-
   <div class="count" id="count"></div>
   <div id="grid-area"><div class="loading">⏳ Carregando empreendimentos...</div></div>
 </div>
 
 <script>
 const SHEETS_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vTuvCpxiE-RA2lXr749yaz_dZS6izTe3YUsa8wPru4a6uQBF3ZPRps8RWBQvad_7gpjK-GG6T29oQWQ/pub?output=csv";
-const SHEETS_EDIT="https://docs.google.com/spreadsheets/d/e/2PACX-1vTuvCpxiE-RA2lXr749yaz_dZS6izTe3YUsa8wPru4a6uQBF3ZPRps8RWBQvad_7gpjK-GG6T29oQWQ/pub";
 let emps=[];
 
-function openSheets(){window.open(SHEETS_EDIT,'_blank')}
+function clean(s){return(s||"").replace(/^["'\s]+|["'\s]+$/g,"").trim()}
 
 function parseCSV(text){
   const lines=text.trim().split("\n");
   if(lines.length<2)return[];
-  const headers=lines[0].split(",").map(h=>h.trim().toLowerCase().replace(/"/g,""));
+  const headers=lines[0].split(",").map(h=>clean(h).toLowerCase());
   return lines.slice(1).map(line=>{
     const cols=[];let cur="",inQ=false;
     for(let c of line){
       if(c==='"'){inQ=!inQ}
-      else if(c===','&&!inQ){cols.push(cur.trim());cur=""}
+      else if(c===','&&!inQ){cols.push(cur);cur=""}
       else cur+=c;
     }
-    cols.push(cur.trim());
+    cols.push(cur);
     const obj={};
-    headers.forEach((h,i)=>obj[h]=(cols[i]||"").replace(/^"|"$/g,"").trim());
-    const clean=s=>s.replace(/^["'\s]+|["'\s]+$/g,"").trim();
-    return{id:Math.random(),nome:clean(obj.nome||""),construtora:clean(obj.construtora||""),status:clean(obj.status||""),zona:clean(obj.zona||""),bairro:clean(obj.bairro||""),dorm:parseInt(clean(obj.dorm||"0"))||0,preco:clean(obj.preco||""),vaga:clean(obj.vaga||"").toLowerCase()==="sim",varanda:clean(obj.varanda||"").toLowerCase()==="sim",obs:clean(obj.obs||"")};
+    headers.forEach((h,i)=>obj[h]=clean(cols[i]||""));
+    return{
+      id:Math.random(),
+      nome:obj.nome||"",
+      construtora:obj.construtora||"",
+      status:obj.status||"",
+      zona:obj.zona||"",
+      bairro:obj.bairro||"",
+      dorm:parseInt(obj.dorm)||0,
+      preco:obj.preco||"",
+      vaga:obj.vaga.toLowerCase()==="sim",
+      varanda:obj.varanda.toLowerCase()==="sim",
+      obs:obj.obs||""
+    };
   }).filter(e=>e.nome);
 }
 
 async function loadData(){
   const btn=document.getElementById("refresh-btn");
-  btn.textContent="⏳ Atualizando...";btn.disabled=true;
+  btn.textContent="⏳...";btn.disabled=true;
   document.getElementById("error-area").innerHTML="";
   document.getElementById("grid-area").innerHTML='<div class="loading">⏳ Carregando empreendimentos...</div>';
   try{
@@ -148,7 +148,7 @@ async function loadData(){
       document.getElementById("grid-area").innerHTML='<div class="empty">Nenhum empreendimento encontrado na planilha.<br><small>Verifique os cabeçalhos: nome, construtora, status, zona, bairro, dorm, preco, vaga, varanda, obs</small></div>';
     }else{render()}
   }catch(e){
-    document.getElementById("error-area").innerHTML=`<div class="error-box">⚠️ Não foi possível carregar os dados: ${e.message}. Verifique se a planilha está publicada como CSV.</div>`;
+    document.getElementById("error-area").innerHTML=`<div class="error-box">⚠️ Não foi possível carregar os dados: ${e.message}.</div>`;
     document.getElementById("grid-area").innerHTML="";
   }finally{btn.textContent="↻ Atualizar";btn.disabled=false}
 }
@@ -189,10 +189,10 @@ function render(){
   const curConst=fConst.value;
   fConst.innerHTML='<option value="">Todas as construtoras</option>'+allConst.map(c=>`<option${c===curConst?" selected":""}>${c}</option>`).join("");
 
-  const filteredBairros=[...new Set(emps.filter(e=>!zona||e.zona===zona).map(e=>e.bairro).filter(Boolean))].sort();
+  const filtBairros=[...new Set(emps.filter(e=>!zona||e.zona===zona).map(e=>e.bairro).filter(Boolean))].sort();
   const fB=document.getElementById("f-bairro");
   const curB=fB.value;
-  fB.innerHTML='<option value="">Todos os bairros</option>'+filteredBairros.map(b=>`<option${b===curB?" selected":""}>${b}</option>`).join("");
+  fB.innerHTML='<option value="">Todos os bairros</option>'+filtBairros.map(b=>`<option${b===curB?" selected":""}>${b}</option>`).join("");
 
   document.getElementById("count").textContent=`${list.length} empreendimento${list.length!==1?"s":""} encontrado${list.length!==1?"s":""}`;
 
