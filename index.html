@@ -129,7 +129,8 @@ function parseCSV(text){
       preco:obj.preco||"",
       vaga:obj.vaga.toLowerCase()==="sim",
       varanda:obj.varanda.toLowerCase()==="sim",
-      obs:obj.obs||""
+      obs:obj.obs||"",
+      material:obj.material||""
     };
   }).filter(e=>e.nome);
 }
@@ -213,6 +214,7 @@ function render(){
       </div>
       ${e.preco?`<div class="card-price">${e.preco}</div>`:""}
       ${e.obs?`<div class="card-obs">${e.obs}</div>`:""}
+      ${e.material?`<a href="${e.material}" target="_blank" style="display:inline-block;margin-top:4px;padding:6px 12px;background:#1a2d6b;color:#fff;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none">📎 Ver Materiais</a>`:""}
     </div>`).join("")}
   </div>`;
 }
